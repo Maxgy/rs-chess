@@ -17,7 +17,7 @@ impl Pawn {
     pub fn new_black() -> Self {
         Self {
             color: Color::Black,
-            symbol: 'P',
+            symbol: 'p',
             has_moved: false,
         }
     }

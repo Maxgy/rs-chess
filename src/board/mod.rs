@@ -1,7 +1,7 @@
 use std::io;
 use std::io::Write;
 
-use crate::piece::Piece;
+use crate::piece::{Piece, Playable};
 
 pub fn read_line() -> String {
     let mut input = String::new();
@@ -20,59 +20,38 @@ impl Board {
     pub fn new() -> Self {
         Self {
             layout: vec![
-                vec![
-                    Some(Piece::new("R")),
-                    Some(Piece::new("N")),
-                    Some(Piece::new("B")),
-                    Some(Piece::new("K")),
-                    Some(Piece::new("Q")),
-                    Some(Piece::new("B")),
-                    Some(Piece::new("N")),
-                    Some(Piece::new("R")),
-                ],
-                vec![
-                    Some(Piece::new("P")),
-                    Some(Piece::new("P")),
-                    Some(Piece::new("P")),
-                    Some(Piece::new("P")),
-                    Some(Piece::new("P")),
-                    Some(Piece::new("P")),
-                    Some(Piece::new("P")),
-                    Some(Piece::new("P")),
-                ],
-                vec![None, None, None, None, None, None, None, None],
-                vec![None, None, None, None, None, None, None, None],
-                vec![None, None, None, None, None, None, None, None],
-                vec![None, None, None, None, None, None, None, None],
-                vec![None, None, None, None, None, None, None, None],
-                vec![
-                    Some(Piece::new("p")),
-                    Some(Piece::new("p")),
-                    Some(Piece::new("p")),
-                    Some(Piece::new("p")),
-                    Some(Piece::new("p")),
-                    Some(Piece::new("p")),
-                    Some(Piece::new("p")),
-                    Some(Piece::new("p")),
-                ],
-                vec![
-                    Some(Piece::new("r")),
-                    Some(Piece::new("n")),
-                    Some(Piece::new("b")),
-                    Some(Piece::new("q")),
-                    Some(Piece::new("k")),
-                    Some(Piece::new("b")),
-                    Some(Piece::new("n")),
-                    Some(Piece::new("r")),
-                ],
-            ],
+                vec!['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+                vec!['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+                vec!['.', '.', '.', '.', '.', '.', '.', '.'],
+                vec!['.', '.', '.', '.', '.', '.', '.', '.'],
+                vec!['.', '.', '.', '.', '.', '.', '.', '.'],
+                vec!['.', '.', '.', '.', '.', '.', '.', '.'],
+                vec!['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+                vec!['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
+            ]
+            .iter()
+            .map(|v| {
+                v.iter()
+                    .map(|&c| if c == '.' { None } else { Some(Piece::new(c)) })
+                    .collect()
+            })
+            .collect(),
         }
     }
 
-    pub fn prompt(&self) -> String {
+    pub fn run(&self) {
         loop {
-            print!(":");
+            println!("{}", self.show());
+
+            self.prompt();
+        }
+    }
+
+    fn prompt(&self) -> String {
+        loop {
+            print!("Move : ");
             io::stdout().flush().expect("error flushing");
+
             let input = read_line();
             if !input.is_empty() {
                 return input;
@@ -82,12 +61,12 @@ impl Board {
         }
     }
 
-    pub fn show(&self) -> String {
+    fn show(&self) -> String {
         let mut grid = String::new();
         for y in self.layout.iter() {
             for x in y {
                 if let Some(piece) = x {
-                    grid.push_str(&format!("{} ", &piece.symbol));
+                    grid.push_str(&format!("{} ", piece.symbol()));
                 } else {
                     grid.push_str(". ");
                 }

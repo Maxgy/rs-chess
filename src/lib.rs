@@ -1,2 +1,4 @@
-pub mod board;
+mod board;
 mod piece;
+
+pub use board::Board;

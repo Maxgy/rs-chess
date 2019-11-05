@@ -39,7 +39,7 @@ impl Board {
         }
     }
 
-    pub fn run(&self) {
+    pub fn play(&self) {
         loop {
             println!("{}", self.show());
 
